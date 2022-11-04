@@ -9,10 +9,10 @@ CORS(app, origin="*")
 def serve():
     return send_from_directory(app.static_folder, "index.html")
 
-@app.route('/', defaults={'u_path': ''})
-@app.route('/<path:u_path>')
-def catch_all(u_path):
-    return send_from_directory(app.static_folder, "index.html")
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    return 'You want path: %s' % path
 
 if __name__=="__main__":
     app.run(host="localhost", port="8080", debug=True)
