@@ -9,6 +9,10 @@ CORS(app, origin="*")
 def serve():
     return send_from_directory(app.static_folder, "index.html")
 
+@app.route("/profile")
+def profile():
+    return send_from_directory(app.static_folder, "index.html")
+
 @app.errorhandler(404)
 def page_not_found(e):
     """When there's a 404 error, return to the main page."""
