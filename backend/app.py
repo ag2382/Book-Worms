@@ -9,10 +9,10 @@ CORS(app, origin="*")
 def serve():
     return send_from_directory(app.static_folder, "index.html")
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return 'You want path: %s' % path
+@app.errorhandler(404)
+def page_not_found(e):
+    """When there's a 404 error, return to the main page."""
+    return send_from_directory(app.static_folder, "index.html")
 
 if __name__=="__main__":
     app.run(host="localhost", port="8080", debug=True)
