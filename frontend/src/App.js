@@ -4,15 +4,21 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Link
+  Outlet
 } from "react-router-dom";
 import Home from "./pages/Home"
 import Profile from "./pages/Profile"
-import Create from "./pages/Create"
 import Navbar from "./components/Navbar"
+import Create from "./pages/Create"
 
-const Protected = ({ children }) => {
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+const Protected = () => {
+  const { isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <div>Loading..</div>
+    )
+  }
 
   if (!isAuthenticated) {
     loginWithRedirect()
@@ -21,7 +27,7 @@ const Protected = ({ children }) => {
     )
   }
 
-  return children;
+  return <Outlet />;
 }
 
 function App() {
@@ -31,14 +37,11 @@ function App() {
       <Navbar />
       <div className='container'>
         <Routes>
-            <Route path='/profile' element={
-              <Protected>
-                <Profile/>
-              </Protected>
-            }
-            />
-          <Route path="/create" element={<Create />} />
           <Route path='/' element={<Home/>} />
+          <Route element={<Protected />}>
+            <Route path="/profile" element={<Profile />} />
+          </Route>
+          <Route path="/create" element={<Create />} />
         </Routes>
       </div>
     </Router>
