@@ -9,7 +9,7 @@ const Profile = () => {
   }
 
   return (
-      <div>
+      <div className="mt-3">
         <img src={user.picture} alt={user.name} />
         <h2>{user.name}</h2>
         <p>{user.email}</p>

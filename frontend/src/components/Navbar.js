@@ -1,34 +1,48 @@
 import React from "react";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
-import ProfileIcon from "./ProfileIcon";
-import { Link } from 'react-router-dom'
 import { useAuth0 } from "@auth0/auth0-react";
+import "./Navbar.scss"
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 
 export default function BookWormsNavbar() {
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
     return (
-        <nav className="navbar">
-            <div className="container">
-                <Link className="navbar-brand" to="/">
-                    BookWorms
-                </Link>
-                <ul className="navbar-nav mr-auto">
-                    {isAuthenticated ? (
-                            <li className="nav-item">
-                                <LogoutButton />
-                                <Link to="/profile">
-                                    <ProfileIcon />
-                                </Link>
-                            </li>
+        <Navbar collapseOnSelect expand="lg">
+          <Container>
+            <Navbar.Brand href="/">
+                BookWorms
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Collapse id="responsive-navbar-nav">
+              <Nav className="me-auto">
+                <Nav.Link href="/create">Create</Nav.Link>
+                <Nav.Link href="/join">Join</Nav.Link>
+                <NavDropdown title="Clubs" id="collasible-nav-dropdown">
+                  <NavDropdown.Item href="/create">Create</NavDropdown.Item>
+                  <NavDropdown.Item href="/join">
+                    Join
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+              <Nav>
+              {isAuthenticated ? (
+                        <>
+                            <NavDropdown title={user.name} id="collasible-nav-dropdown">
+                                <NavDropdown.Item href="/profile">View Profile</NavDropdown.Item>
+                                <NavDropdown.Item onClick={() => logout()}>
+                                    Logout
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                        </>
                     ) : (
-                        <li className="nav-item">
-                            <LoginButton />
-                        </li>
+                        <Nav.Link onClick={() => loginWithRedirect({ returnTo: window.location.origin })}>Login</Nav.Link>
                         )}
-                </ul>
-            </div>
-        </nav>
-    );
+              </Nav>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+      );
 }

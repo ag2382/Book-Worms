@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Create() {
     return (
-        <div>
+        <div className="mt-3">
             Create a club
         </div>
     )
