@@ -20,12 +20,6 @@ export default function BookWormsNavbar() {
               <Nav className="me-auto">
                 <Nav.Link href="/create">Create</Nav.Link>
                 <Nav.Link href="/join">Join</Nav.Link>
-                <NavDropdown title="Clubs" id="collasible-nav-dropdown">
-                  <NavDropdown.Item href="/create">Create</NavDropdown.Item>
-                  <NavDropdown.Item href="/join">
-                    Join
-                  </NavDropdown.Item>
-                </NavDropdown>
               </Nav>
               <Nav>
               {isAuthenticated ? (
