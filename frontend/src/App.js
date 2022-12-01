@@ -10,6 +10,7 @@ import Home from "./pages/Home"
 import Profile from "./pages/Profile"
 import Navbar from "./components/Navbar"
 import Create from "./pages/Create"
+import Join from "./pages/Join"
 
 const Protected = () => {
   const { isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
@@ -41,7 +42,12 @@ function App() {
           <Route element={<Protected />}>
             <Route path="/profile" element={<Profile />} />
           </Route>
-          <Route path="/create" element={<Create />} />
+          <Route element={<Protected />}>
+            <Route path="/create" element={<Create />} />
+          </Route>
+          <Route element={<Protected />}>
+            <Route path="/join" element={<Join />} />
+          </Route>
         </Routes>
       </div>
     </Router>
