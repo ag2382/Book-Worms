@@ -12,19 +12,19 @@ export default function BookWormsNavbar() {
     return (
         <Navbar collapseOnSelect expand="lg">
           <Container>
-            <Navbar.Brand href="/">
+            <Navbar.Brand href="/" id="brand">
                 BookWorms
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
             <Navbar.Collapse id="responsive-navbar-nav">
               <Nav className="me-auto">
-                <Nav.Link href="/create">Create</Nav.Link>
-                <Nav.Link href="/join">Join</Nav.Link>
+                <Nav.Link id="link" href="/create">Create</Nav.Link>
+                <Nav.Link id="link" href="/join">Join</Nav.Link>
               </Nav>
               <Nav>
               {isAuthenticated ? (
                         <>
-                            <NavDropdown title={user.name} id="collasible-nav-dropdown">
+                            <NavDropdown title={user.name} id="link">
                                 <NavDropdown.Item href="/profile">View Profile</NavDropdown.Item>
                                 <NavDropdown.Item onClick={() => logout()}>
                                     Logout
@@ -32,7 +32,7 @@ export default function BookWormsNavbar() {
                             </NavDropdown>
                         </>
                     ) : (
-                        <Nav.Link onClick={() => loginWithRedirect({ returnTo: window.location.origin })}>Login</Nav.Link>
+                        <Nav.Link onClick={() => loginWithRedirect({ returnTo: window.location.origin })} id="link">Login</Nav.Link>
                         )}
               </Nav>
             </Navbar.Collapse>
