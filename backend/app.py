@@ -1,8 +1,17 @@
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS
+from flask_mysqldb import MySQL
 import os
 
 app = Flask(__name__, static_folder="../build", static_url_path="/")
+
+app.config['MYSQL_USER'] = 'b54c4a3f725cac'
+app.config['MYSQL_PASSWORD'] = 'c9cf936a'
+app.config['MYSQL_HOST'] = 'us-cdbr-east-06.cleardb.net'
+app.config['MYSQL_DB'] = 'heroku_f6468b727c70c8d'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
+mysql=MySQL(app)
 
 CORS(app, origin="*")
 
