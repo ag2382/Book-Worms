@@ -1,0 +1,40 @@
+.home {
+
+    tr {
+        cursor: pointer;
+    }
+
+    tr:hover {
+        background-color: lightgray;
+    }
+    
+
+    .recent-club {
+        color: black;
+        text-decoration: none;
+        padding: 0% 0% 0% 0%;
+        :hover {
+            background-color: lightgray;
+        }
+
+        .card {
+            border: none;
+            border-bottom: 1px solid lightgray;
+            border-radius: 0%;
+            padding: 0% 0% 0% 0%;
+        }
+
+        .reading {
+            opacity: 75%;
+            font-style: italic;
+        }
+        
+
+        h5 {
+            font-size: 20px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+    }
+
+}
