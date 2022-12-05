@@ -1,19 +1,16 @@
 import React, {useState} from "react";
-import ClubBox from "../components/ClubBox";
 import Header from "../components/Header";
-import Container from 'react-bootstrap/Container';
-import {Row, Col} from 'react-bootstrap';
 import "./Home.scss"
 
 // {name: "Thrill Seekers", book: "The Sleep Experiment", owner: false, reviewDue: 5}
 
 export default function Home() {
     const [clubs, setClubs] = useState([
-                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5},
-                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5},
-                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5},
-                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5},
-                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5},
+                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5, id: 1},
+                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5, id: 2},
+                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5, id: 3},
+                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5, id: 4},
+                    {name: "Lorem Ipsum", book: "Lorem Ipsum", owner: false, reviewDue: 5, id: 5},
                     ]);
 
     const [recentClubs, setRecentClubs] = useState([
@@ -30,35 +27,35 @@ export default function Home() {
         <div className="mt-3 home">
             <Header title={"My Clubs"} context={"These are all of your active clubs!"}/>
             <div className="mb-5">
-            <table className="table">
-                <thead>
-                    <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Book</th>
-                    <th scope="col">Due (days)</th>
-                    <th scope="col">Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {
-                        clubs?.map((club, index) => (
-                            <tr onClick={() => window.location = '/join'}>
-                                <th scope="row">{index+1}</th>
-                                <td>{club.name}</td>
-                                <td>{club.book}</td>
-                                <td>{club.reviewDue}</td>
-                                <td>{club.owner ? "Owner" : "Member"}</td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
+                <table className="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Book</th>
+                        <th scope="col">Due (days)</th>
+                        <th scope="col">Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            clubs?.map((club, index) => (
+                                <tr onClick={() => window.location = `/club/${club.id}`}>
+                                    <th scope="row">{index+1}</th>
+                                    <td>{club.name}</td>
+                                    <td>{club.book}</td>
+                                    <td>{club.reviewDue}</td>
+                                    <td>{club.owner ? "Owner" : "Member"}</td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
             </div>
             <Header title={"Recently Created Clubs"} context={"These are our newest clubs!"}/>
                 {
                     recentClubs?.map((club) => (
-                        <a href="/join" className="recent-club">
+                        <a href="/club" className="recent-club">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">{club.name}</h5>
