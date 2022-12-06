@@ -6,7 +6,7 @@ export default function Header({ title, context=null }) {
         <div className="header mb-3">
             <h3>{title}</h3>
             {
-                context && context
+                context
             }
         </div>
     )

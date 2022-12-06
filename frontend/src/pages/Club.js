@@ -10,6 +10,7 @@ export default function Club() {
     return (
         <div className="club mt-3">
             <Header title={clubInfo.name} context={clubInfo.description} />
+            <div className="mb-3">Currently reading: {clubInfo.book}</div>
             <Header title={"Discussions"} />
             {/* put a table with discussion here, when clicked will take them to the disucssion */}
             <div className="mb-5">

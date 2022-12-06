@@ -6,6 +6,23 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+input[type=text], input[type=url], input[type=search] {
+  border-radius: 0%;
+  border: 1px solid lightgray;
+}
+
+input[type=submit], button {
+  border-radius: 0%;
+  border: 1px solid lightgray;
+  background-color: white;
+}
+
+input[type=submit]:hover, button:hover {
+  background-color: black;
+  border: 1px solid white;
+  color: white;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

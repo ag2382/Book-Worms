@@ -1,0 +1,23 @@
+.join {
+
+    .join-club {
+        color: black;
+        text-decoration: none;
+        padding: 0% 0% 0% 0%;
+        border: none;
+        border-bottom: 1px solid lightgray;
+        border-radius: 0%;
+        
+            .reading {
+                opacity: 75%;
+                font-style: italic;
+            }
+            
+            
+            h5 {
+                font-size: 20px;
+                font-family: 'Playfair Display', serif;
+                font-weight: 700;
+            }
+    }
+}
