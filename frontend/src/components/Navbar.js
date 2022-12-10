@@ -10,7 +10,7 @@ export default function BookWormsNavbar() {
     const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
     return (
-        <Navbar collapseOnSelect expand="lg">
+        <Navbar collapseOnSelect expand="lg" className="bookworms-nav">
           <Container>
             <Navbar.Brand href="/" id="brand">
                 BookWorms

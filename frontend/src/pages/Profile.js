@@ -11,8 +11,8 @@ const Profile = () => {
   return (
       <div className="mt-3">
         <img src={user.picture} alt={user.name} />
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
+        <h5>Username: {user.name}</h5>
+        <h5>{user.email}</h5>
       </div>
   );
 };

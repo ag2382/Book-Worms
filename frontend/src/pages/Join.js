@@ -28,14 +28,20 @@ export default function Create() {
         <div className="mt-3 join">
             <Header title={"Join"} context={"Join a club."} />
             <nav class="navbar navbar-light bg-light">
-                <form class="form-inline" onSubmit={handleSubmit}>
-                    <input id="search" type="search" placeholder="Search" aria-label="Search" onChange={(event) => setSearch(event.target.value)} />
-                    <input class="mx-2" type="submit" value={"Search"} />
-                </form>
+                <div className="container">
+                    <form class="form-inline" onSubmit={handleSubmit}>
+                        <input id="search" type="search" placeholder="Search" aria-label="Search" onChange={(event) => setSearch(event.target.value)} />
+                        <input class="mx-2" type="submit" value={"Search"} />
+                    </form>
+                    <ul className="navbar-nav mr-auto">
+                        <li className="nav-item"><button className="filter">Top</button></li>
+                        <li className="nav-item"><button className="filter" disabled>Latest</button></li>
+                    </ul>
+                </div>
             </nav>
             {
-                    clubs?.map((club) => (
-                            <div class="card join-club">
+                    clubs?.map((club, index) => (
+                            <div class="card join-club" key={index}>
                                 <div class="card-body">
                                     <h5 class="card-title">{club.name}</h5>
                                     <p class="card-text">{club.description}</p>
