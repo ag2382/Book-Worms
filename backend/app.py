@@ -103,9 +103,11 @@ def users(user_id):
 def get_discussions(club_id):
     """Fetches all discussion in a club."""
 
+
 @app.route("/api/clubs/get/review/<int: club_id>/<int: book_id>")
 def get_reviews(club_id, book_id):
     """Fetches all reviews for a discussion."""
+    
 
 @app.route("/api/clubs/latest", methods=["GET"])
 def latest():
