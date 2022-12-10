@@ -139,6 +139,16 @@ def most_joined():
 
 
 
+@app.route("api/clubs/get_review/<int: club_id><int: book_id>", methods=['GET'])
+def reviews(club_id, book_id):
+    query=f"SELECT * FROM reviews WHERE club_id = int"
+    return{'Reviews',query}
+
+@app.route("api/clubs/latest)", methods=['GET'])
+def latest_club():
+    query=f"SELECT * FROM club  ORDERED BY start_date"
+    return("Latest Club: ", query)
+
 @app.errorhandler(404)
 def page_not_found(e):
     """When there's a 404 error, return to the main page."""
