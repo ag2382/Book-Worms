@@ -1,6 +1,5 @@
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS
-from flask_mysqldb import MySQL
 import os
 from decouple import config
 import mysql.connector
@@ -8,12 +7,11 @@ import mysql.connector
 app = Flask(__name__, static_folder="../build", static_url_path="/")
 
 def connect():
-    return mysql.connector.connect(host=config('HOST'),
-                                    database=config('DB'),
-                                    user=config('USER'),
-                                    password=config('PASSWORD'))
 
-mysql=MySQL(app)
+    return mysql.connector.connect(user=config('DB_USER'),
+                                    host=config('HOST'),
+                                    database=config('DB'),
+                                    password=config('PASSWORD'))
 
 CORS(app, origin="*")
 
@@ -26,7 +24,7 @@ def serve(path):
     else:
         return send_from_directory(os.path.join(app.static_folder),'index.html')
 
-@app.route("/api/club/create/<str: user_id>", methods=['POST'])
+@app.route("/api/club/create/<string:user_id>", methods=['POST'])
 def new_club(user_id):
     """Adds a new club."""
 
@@ -43,7 +41,7 @@ def new_club(user_id):
     connection.close()
 
 
-@app.route("/api/clubs/join/<str: user_id>/<int: club_id>", methods=["POST"]) 
+@app.route("/api/clubs/join/<string:user_id>/<int:club_id>", methods=["POST"]) 
 def new_user(user_id, club_id):
     """Adds a new user to a club."""
 
@@ -56,7 +54,7 @@ def new_user(user_id, club_id):
     cursor.close()
     connection.close()
 
-@app.route("/api/clubs/add_book/<int: club_id>", methods=["POST"])
+@app.route("/api/clubs/add_book/<int:club_id>", methods=["POST"])
 def new_book(club_id):
     """Adds a new book for discussion in a club."""
 
@@ -73,7 +71,7 @@ def new_book(club_id):
     cursor.close()
     connection.close()
 
-@app.route("/api/clubs/post/review/<str: user_id>/<int: club_id>/<int: book_id>", methods=["POST"])
+@app.route("/api/clubs/post/review/<string:user_id>/<int:club_id>/<int:book_id>", methods=["POST"])
 def new_review(user_id,club_id, book_id, member_id):
     """Adds a new review for a book in a club."""
     
@@ -89,7 +87,7 @@ def new_review(user_id,club_id, book_id, member_id):
     cursor.close()
     connection.close()
 
-@app.route("/api/clubs/user/<str: user_id", methods=["GET"])
+@app.route("/api/clubs/user/<string:user_id>", methods=["GET"])
 def users(user_id):
     """Fetches all of the user's joined clubs."""
 
@@ -99,15 +97,15 @@ def users(user_id):
     query = f"SELECT * FROM club_members "
     cursor.execute(query)
 
-@app.route("/api/clubs/discussion/<int: club_id>", methods=["GET"])
+@app.route("/api/clubs/discussion/<int:club_id>", methods=["GET"])
 def get_discussions(club_id):
     """Fetches all discussion in a club."""
 
 
-@app.route("/api/clubs/get/review/<int: club_id>/<int: book_id>")
+@app.route("/api/clubs/get/review/<int:club_id>/<int:book_id>")
 def get_reviews(club_id, book_id):
     """Fetches all reviews for a discussion."""
-    
+
 
 @app.route("/api/clubs/latest", methods=["GET"])
 def latest():
@@ -130,24 +128,13 @@ def most_joined():
     connection = connect()
     cursor = connection.cursor()
 
-    query=f"SELECT * FROM club  ORDERED BY start_date;"
+    query=f"SELECT * FROM club  ORDERED BY start_date LIMIT 5;"
     cursor.execute(query)
     results = cursor.fetchall()
+    print(results)
 
     cursor.close()
     connection.close()
-
-
-
-@app.route("api/clubs/get_review/<int: club_id><int: book_id>", methods=['GET'])
-def reviews(club_id, book_id):
-    query=f"SELECT * FROM reviews WHERE club_id = int"
-    return{'Reviews',query}
-
-@app.route("api/clubs/latest)", methods=['GET'])
-def latest_club():
-    query=f"SELECT * FROM club  ORDERED BY start_date"
-    return("Latest Club: ", query)
 
 @app.errorhandler(404)
 def page_not_found(e):
