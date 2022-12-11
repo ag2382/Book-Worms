@@ -8,9 +8,9 @@ app = Flask(__name__, static_folder="../build", static_url_path="/")
 
 def connect():
 
-    return mysql.connector.connect(user=config('DB_USER'),
-                                    host=config('HOST'),
+    return mysql.connector.connect(host=config('HOST'),
                                     database=config('DB'),
+                                    user=config('USERBOOKWORM'),
                                     password=config('PASSWORD'))
 
 CORS(app, origin="*")
@@ -87,25 +87,46 @@ def new_review(user_id,club_id, book_id, member_id):
     cursor.close()
     connection.close()
 
-@app.route("/api/clubs/user/<string:user_id>", methods=["GET"])
-def users(user_id):
+@app.route("/api/clubs/user/<string:member_id", methods=["GET"])
+def users(member_id):
     """Fetches all of the user's joined clubs."""
 
     connection = connect()
     cursor = connection.cursor()
 
-    query = f"SELECT * FROM club_members "
+    query = f"SELECT * FROM club_members ORDER BY {member_id};"
     cursor.execute(query)
+    results = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
 
 @app.route("/api/clubs/discussion/<int:club_id>", methods=["GET"])
 def get_discussions(club_id):
     """Fetches all discussion in a club."""
+    connection = connect()
+    cursor = connection.cursor()
+
+    query=f"SELECT book_name FROM book ORDER BY {club_id} ;"
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
 
 
-@app.route("/api/clubs/get/review/<int:club_id>/<int:book_id>")
+@app.route("/api/clubs/get/review/<int:club_id>/<int: book_id>", methods=["GET"])
 def get_reviews(club_id, book_id):
     """Fetches all reviews for a discussion."""
+    connection = connect()
+    cursor = connection.cursor()
 
+    query=f"SELECT review_txt FROM review ORDER BY {club_id}, {book_id};"
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    cursor.close()
+    connection.close()
 
 @app.route("/api/clubs/latest", methods=["GET"])
 def latest():
@@ -114,27 +135,27 @@ def latest():
     connection = connect()
     cursor = connection.cursor()
 
-    query=f"SELECT * FROM club  ORDERED BY start_date;"
-    cursor.execute(query)
-    results = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-@app.route("/api/clubs/most_joined", methods=["GET"])
-def most_joined():
-    """Fetches all of the most joined clubs."""
-
-    connection = connect()
-    cursor = connection.cursor()
-
-    query=f"SELECT * FROM club  ORDERED BY start_date LIMIT 5;"
+    query=f"SELECT club_name, start_date  FROM club ORDER BY start_date LIMIT 5;"
     cursor.execute(query)
     results = cursor.fetchall()
     print(results)
 
     cursor.close()
     connection.close()
+
+# @app.route("/api/clubs/most_joined", methods=["GET"])
+# def most_joined():
+#     """Fetches all of the most joined clubs."""
+
+#     connection = connect()
+#     cursor = connection.cursor()
+
+#     query=f"SELECT * FROM club  ORDERED BY start_date;"
+#     cursor.execute(query)
+#     results = cursor.fetchall()
+
+#     cursor.close()
+    # connection.close()
 
 @app.errorhandler(404)
 def page_not_found(e):
