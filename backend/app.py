@@ -1,3 +1,4 @@
+#TODO USE AUTH0 API TO ADD NAMES TO USER IDs
 from flask import Flask, send_from_directory, request
 from flask_cors import CORS
 import os
@@ -7,10 +8,9 @@ import mysql.connector
 app = Flask(__name__, static_folder="../build", static_url_path="/")
 
 def connect():
-
     return mysql.connector.connect(host=config('HOST'),
                                     database=config('DB'),
-                                    user=config('USERBOOKWORM'),
+                                    user=config('DB_USER'),
                                     password=config('PASSWORD'))
 
 CORS(app, origin="*")
@@ -24,124 +24,181 @@ def serve(path):
     else:
         return send_from_directory(os.path.join(app.static_folder),'index.html')
 
-@app.route("/api/club/create/<string:user_id>", methods=['POST'])
+@app.route("/api/club/create/<string:user_id>", methods=["POST"]) # TESTED
 def new_club(user_id):
     """Adds a new club."""
 
-    club_name = request.args.get('club_name')
-    club_desc = request.args.get('club_desc')
+    if request.method == "POST":
+        club_name = request.args.get('club_name')
+        club_desc = request.args.get('club_desc')
 
-    connection = connect()
-    cursor = connection.cursor()
+        connection = connect()
+        cursor = connection.cursor()
 
-    query = f"INSERT INTO club (club_name, description, owner_id) VALUES({club_name}, {club_desc}, {user_id}) RETURNING; INSERT INTO club_members (member_id, club_id)  VALUES ({user_id}, (SELECT LAST_INSERT_ID()));"
-    cursor.execute(query)
+        query = "INSERT INTO club (club_name, description, owner_id) VALUES(%s, %s, %s);"
+        cursor.execute(query, (club_name, club_desc, user_id))
+        cursor.close()
 
-    cursor.close()
-    connection.close()
+        query = "INSERT INTO club_members (member_id, club_num)  VALUES (%s, (SELECT LAST_INSERT_ID()));"
+            
+        cursor = connection.cursor()
+        cursor.execute(query,  [user_id])
+
+        connection.commit()
+        connection.close()
+        return "Success", 201
 
 
-@app.route("/api/clubs/join/<string:user_id>/<int:club_id>", methods=["POST"]) 
+@app.route("/api/clubs/join/<string:user_id>/<int:club_id>", methods=["POST"]) #TESTED
 def new_user(user_id, club_id):
     """Adds a new user to a club."""
 
-    connection = connect()
-    cursor = connection.cursor()
+    if request.method == "POST":
+        connection = connect()
+        cursor = connection.cursor()
 
-    query = f"INSERT INTO club_members(club_id, member_id) VALUES({club_id},{user_id});"
-    cursor.execute(query)
+        query = "INSERT INTO club_members(club_num, member_id) VALUES(%s, %s);"
+        cursor.execute(query, (club_id, user_id))
 
-    cursor.close()
-    connection.close()
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return "Success", 201
 
-@app.route("/api/clubs/add_book/<int:club_id>", methods=["POST"])
+
+@app.route("/api/clubs/add_book/<int:club_id>", methods=["POST"]) #TESTED
 def new_book(club_id):
     """Adds a new book for discussion in a club."""
 
-    book_title = request.args.get('book_title')
-    book_desc = request.args.get('book_desc')
-    book_img = request.args.get('book_img', default="")
+    if request.method == "POST":
+        book_title = request.args.get('book_title')
+        book_desc = request.args.get('book_desc')
+        book_img = request.args.get('book_img', default="")
 
-    connection = connect()
-    cursor = connection.cursor()
+        connection = connect()
+        cursor = connection.cursor()
 
-    query = f"INSERT INTO BOOK(club_id, book_name, book_desc, book_img) VALUES({club_id}, {book_title}, {book_desc},{book_img});"
-    cursor.execute(query)
+        query = "INSERT INTO BOOK(club_id, book_name, book_desc, book_imgs) VALUES(%s, %s, %s, %s);"
+        cursor.execute(query, (club_id, book_title, book_desc, book_img))
 
-    cursor.close()
-    connection.close()
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return "Success", 201
 
-@app.route("/api/clubs/post/review/<string:user_id>/<int:club_id>/<int:book_id>", methods=["POST"])
-def new_review(user_id,club_id, book_id, member_id):
+@app.route("/api/clubs/post/review/<string:user_id>/<int:club_id>/<int:book_id>", methods=["POST"]) #TESTED
+def new_review(user_id, club_id, book_id):
     """Adds a new review for a book in a club."""
-    
-    review = request.args.get('review')
-    rating = request.args.get('rating')
 
-    connection = connect()
-    cursor = connection.cursor()
+    if request.method == "POST":
+        review = request.args.get('review')
+        rating = request.args.get('rating')
 
-    query=f"INSERT INTO review(book_id, clubid, review_txt, member_id, rating) VALUES({user_id},{book_id},{club_id},{review}, {member_id}, {rating});"
-    cursor.execute(query)
+        connection = connect()
+        cursor = connection.cursor()
 
-    cursor.close()
-    connection.close()
+        query = "INSERT INTO review(book_id, club_id, review_txt, member_id, rating) VALUES(%s, %s, %s, %s, %s);"
+        cursor.execute(query, (book_id, club_id, review, user_id, rating))
 
-@app.route("/api/clubs/user/<string:member_id", methods=["GET"])
+        connection.commit()
+        cursor.close()
+        connection.close()
+        return "Success", 201
+
+@app.route("/api/clubs/user/<string:member_id>", methods=["GET"]) # TESTED
 def users(member_id):
     """Fetches all of the user's joined clubs."""
 
-    connection = connect()
-    cursor = connection.cursor()
+    if request.method == "GET":
+        out = {"clubs": []}
 
-    query = f"SELECT * FROM club_members ORDER BY {member_id};"
-    cursor.execute(query)
-    results = cursor.fetchall()
+        connection = connect()
+        cursor = connection.cursor()
 
-    cursor.close()
-    connection.close()
+        query = "SELECT * FROM club_members WHERE member_id=%s;"
+        cursor.execute(query, [member_id])
+        results = cursor.fetchall()
 
-@app.route("/api/clubs/discussion/<int:club_id>", methods=["GET"])
+        cursor.close()
+        connection.close()
+
+        for result in results:
+            out["clubs"].append(
+                {"id": result[1], "member_id": result[0]}
+            )
+
+        return out, 200, {'ContentType':'application/json'}
+
+@app.route("/api/clubs/discussion/<int:club_id>", methods=["GET"]) # TESTED
 def get_discussions(club_id):
     """Fetches all discussion in a club."""
-    connection = connect()
-    cursor = connection.cursor()
 
-    query=f"SELECT book_name FROM book ORDER BY {club_id} ;"
-    cursor.execute(query)
-    results = cursor.fetchall()
+    if request.method == "GET":
+        out = {"discussions":  []}
 
-    cursor.close()
-    connection.close()
+        connection = connect()
+        cursor = connection.cursor()
 
+        query = "SELECT * FROM book WHERE club_id=%s ORDER BY book_id;"
+        cursor.execute(query, [club_id])
+        results = cursor.fetchall()
+        
+        for result in results:
+            out["discussions"].append(
+                {"name": result[0], "club_id": result[1], "start_date": result[2], "desc": result[3], "id": result[4], "img": result[5]}
+            )
 
-@app.route("/api/clubs/get/review/<int:club_id>/<int: book_id>", methods=["GET"])
-def get_reviews(club_id, book_id):
+        cursor.close()
+        connection.close()
+        return out, 200, {'ContentType':'application/json'}
+
+@app.route("/api/clubs/get/review/<int:book_id>", methods=["GET"]) # TESTED
+def get_reviews(book_id):
     """Fetches all reviews for a discussion."""
-    connection = connect()
-    cursor = connection.cursor()
 
-    query=f"SELECT review_txt FROM review ORDER BY {club_id}, {book_id};"
-    cursor.execute(query)
-    results = cursor.fetchall()
+    if request.method == "GET":
+        out = {"reviews": []}
 
-    cursor.close()
-    connection.close()
+        connection = connect()
+        cursor = connection.cursor()
 
-@app.route("/api/clubs/latest", methods=["GET"])
+        query = "SELECT * FROM review WHERE book_id=%s ORDER BY datetime;"
+        cursor.execute(query, [book_id])
+        results = cursor.fetchall()
+
+        for result in results:
+            out["reviews"].append(
+                {"book_id": result[0], "club_id": result[1], "review": result[2], "member_id": result[3], "rating": result[4], "date": result[5]}
+            )
+
+        cursor.close()
+        connection.close()
+
+        return out, 200, {'ContentType':'application/json'}
+
+@app.route("/api/clubs/latest", methods=["GET"]) # TESTED
 def latest():
     """Fetches all of the latest created clubs."""
 
-    connection = connect()
-    cursor = connection.cursor()
+    if request.method == "GET":
+        out = {"clubs": []}
 
-    query=f"SELECT club_name, start_date  FROM club ORDER BY start_date LIMIT 5;"
-    cursor.execute(query)
-    results = cursor.fetchall()
-    print(results)
+        connection = connect()
+        cursor = connection.cursor()
 
-    cursor.close()
-    connection.close()
+        query = "SELECT * FROM club ORDER BY start_date LIMIT 5;"
+        cursor.execute(query)
+        results = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        for result in results:
+            out["clubs"].append(
+                {"id": result[0], "name": result[1], "desc": result[2], "start": result[3], "owner": result[4]}
+            )
+
+        return out, 200, {'ContentType':'application/json'}
 
 # @app.route("/api/clubs/most_joined", methods=["GET"])
 # def most_joined():
