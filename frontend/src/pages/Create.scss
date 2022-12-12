@@ -1,0 +1,10 @@
+.create {    
+
+    textarea {
+        resize: none;
+        height: 80px;
+    }
+    input[type=text], input[type=url], textarea {
+        width: 30%;
+    }
+}

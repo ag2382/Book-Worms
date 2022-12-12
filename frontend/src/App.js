@@ -11,13 +11,15 @@ import Profile from "./pages/Profile"
 import Navbar from "./components/Navbar"
 import Create from "./pages/Create"
 import Join from "./pages/Join"
+import Club from './pages/Club';
+import Discussion from './pages/Discussion';
 
 const Protected = () => {
   const { isAuthenticated, loginWithRedirect, isLoading } = useAuth0();
 
   if (isLoading) {
     return (
-      <div>Loading..</div>
+      <div className='mt-3'>Loading..</div>
     )
   }
 
@@ -47,6 +49,12 @@ function App() {
           </Route>
           <Route element={<Protected />}>
             <Route path="/join" element={<Join />} />
+          </Route>
+          <Route element={<Protected />}>
+            <Route path="/club/:clubId" element={<Club />} />
+          </Route>
+          <Route element={<Protected />}>
+            <Route path="/club/:clubId/discussion/:discussionId" element={<Discussion />} />
           </Route>
         </Routes>
       </div>

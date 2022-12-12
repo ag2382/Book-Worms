@@ -1,0 +1,28 @@
+.club {
+    tr {
+        cursor: pointer;
+    }
+
+    tr:hover {
+        background-color: lightgray;
+    }
+
+    img {
+        border: 2px solid black;
+    }
+
+    #new-book {
+        display: none;
+    }
+
+    input[type=text], input[type=url], textarea, button, input[type=submit] {
+        width: 350px;
+    }
+
+    textarea {
+        resize: none;
+        height: 80px;
+    }
+
+    
+}
