@@ -27,7 +27,6 @@ export default function Create() {
                 club_desc: clubDesc
         })
         .then(function (response) {
-            console.log(response);
             window.location.replace(window.location.origin);
         })
         .catch(function (error) {
