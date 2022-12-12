@@ -18,7 +18,7 @@ CORS(app, origin="*")
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
-    print("Catch all.", path)
+
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(os.path.join(app.static_folder), path)
     else:
@@ -58,7 +58,7 @@ def new_user(club_id):
     if request.method == "POST":
         data = request.get_json()
         user_id = data["user_id"]
-        print("USER_ID", user_id)
+
         connection = connect()
         cursor = connection.cursor()
 
@@ -312,7 +312,7 @@ def latest():
         club_member_results = []
         for club in results:
             club_member_results.append(club[0])
-        print("RESULTS", club_member_results)
+
         cursor.close()
         connection.close()
 

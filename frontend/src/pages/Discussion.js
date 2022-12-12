@@ -61,7 +61,7 @@ export default function Discussion() {
 
         })
         .then(function (response) {
-            console.log(response);
+            window.location.reload();
         })
         .catch(function (error) {
             console.log(error);
@@ -91,9 +91,8 @@ export default function Discussion() {
                         <div className="review card" key={index}>
                             <nav className="navbar navbar-light bg-light">
                                 <div className="container">
-                                    <p className="">{review.member_id}</p>
+                                    <p className="nav-item">{review.date}</p>
                                     <ul className="navbar-nav mr-auto">
-                                        <li className="nav-item">{review.date}</li>
                                         <li className="nav-item">Rating: {review.rating}/5</li>
                                     </ul>
                                 </div>
