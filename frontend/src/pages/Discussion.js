@@ -1,16 +1,19 @@
-import React, {useState} from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import React, {useEffect, useState} from "react";
 import Header from "../components/Header";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 import "./Discussion.scss"
-import star from "../star.webp"
 
 {/* <img src={star} height="20px" width="20px"/> */}
 
 export default function Discussion() {
-    const [reviews, setReviews] = useState([{user: "cgr28@njit.edu", time: "12/3/2022", rating: 5, review: "I really enjoyed this book.  Would highly recommend."}, {user: "cgr28@njit.edu", time: "12/3/2022", rating: 5, review: "I really enjoyed this book.  Would highly recommend."}])
+    let {user} = useAuth0()
+    let {clubId, discussionId} = useParams()
+    const [reviews, setReviews] = useState()
     const [discussionReview, setDiscussionReview] = useState("")
-    const [rating, setRating] = useState(1);
-    const [discussionInfo, setDiscussionInfo] = useState({book: "Lorem Ipsum", startDate: "10/10/2022"});
+    const [rating, setRating] = useState("");
+    const [discussionInfo, setDiscussionInfo] = useState({name: "Lorem Ipsum", date: "10/10/2022"});
 
     const handleDiscussionAdd = (event) => {
         event.target.style.display = "none";
@@ -24,15 +27,58 @@ export default function Discussion() {
         if (review.value.replace(/\s/g, '').length) {
             console.log(discussionReview)
             console.log(rating)
+            postDiscussion(clubId, discussionId)
             document.getElementById("discussion-reply-text").value = "";
             document.getElementById("rating").value = "";
             setDiscussionReview("")
+            setRating("")
         }
     }
 
+    const getDiscussionInfo = (id) => {
+        axios.get(`/api/clubs/book/info/${id}`)
+        .then(function (response) {
+            setDiscussionInfo(response.data.info);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    }
+
+    const getReviews = (id) => {
+        axios.get(`/api/clubs/get/review/${id}`)
+        .then(function (response) {
+            setReviews(response.data.reviews);
+            console.log(response)
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    } 
+
+    const postDiscussion = (clubId, bookId) => {
+        axios.post(`/api/clubs/post/review/${clubId}/${bookId}`, {
+                rating: rating,
+                review: discussionReview,
+                user_id: user.sub
+
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    useEffect(() => {
+        getDiscussionInfo(discussionId)
+        getReviews(discussionId)
+    }, [])
+
     return (
         <div className="mt-3 discussion">
-            <Header title={`Discussion for ${discussionInfo.book}`} context={`Started: ${discussionInfo.startDate}`} />
+            <Header title={`Discussion for ${discussionInfo.name}`} context={`Started: ${discussionInfo.date}`} />
             <button onClick={handleDiscussionAdd} id="discussion-add" className="mb-3">Add to the discussion</button>
             <div id="discussion-reply" className="discussion-reply mb-3">
                 <form onSubmit={handleDiscussionPost} id="discussion-from">
@@ -45,12 +91,12 @@ export default function Discussion() {
             </div>
             {
                     reviews?.map((review, index) => (
-                        <div className="review card" key="index">
+                        <div className="review card" key={index}>
                             <nav className="navbar navbar-light bg-light">
                                 <div className="container">
-                                    <p className="">{review.user}</p>
+                                    <p className="">{review.member_id}</p>
                                     <ul className="navbar-nav mr-auto">
-                                        <li className="nav-item">{review.time}</li>
+                                        <li className="nav-item">{review.date}</li>
                                         <li className="nav-item">Rating: {review.rating}/5</li>
                                     </ul>
                                 </div>

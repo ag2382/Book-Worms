@@ -1,19 +1,59 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Header from "../components/Header";
 import "./Club.scss"
 import ClubCard from "../components/ClubCard";
 import { useParams } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
+import no_image from "../no-image.jpg"
 
 export default function Club() {
     let {clubId} = useParams();
-    const {user} = useAuth0()
-    const [ownerId, setOwnerId] = useState("11212331");
+    const {user} = useAuth0();
     const [bookTitle, setBookTitle] = useState("")
     const [bookDesc, setBookDesc] = useState("")
     const [bookLink, setBookLink] = useState("")
-    const [discussions, setDiscussions] = useState([{book: "Lorem Ipsum", date: "10/22/2022", id: 1}]);
-    const [clubInfo, setClubInfo] = useState({name: "Lorem Ipsum", book: {name: "Lorem Ipsum the Book", img: "https://media-cldnry.s-nbcnews.com/image/upload/t_fit-760w,f_auto,q_auto:best/streams/2014/April/140414/2D274905625233-061026_captainundies_vmed_4p.jpg", description: "It's a book."}, description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus aliquam pellentesque nunc at porttitor. Aliquam ut consequat est. In vulputate leo eget arcu convallis ultricies. Nullam enim nibh, suscipit sit amet malesuada at, consequat id arcu. Sed vitae nulla quis libero fermentum commodo. Integer non ex sit amet dui semper facilisis"})
+    const [discussions, setDiscussions] = useState([]);
+    const [clubInfo, setClubInfo] = useState([])    
+    const getDiscussions = (id) => {
+        axios.get(`/api/clubs/discussion/${id}`)
+        .then(function (response) {
+            setDiscussions(response.data.discussions);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    }
+
+    const getClubInfo = (id) => {
+        axios.get(`/api/clubs/info/${id}`)
+        .then(function (response) {
+            setClubInfo(response.data.info);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    }
+
+    const postDiscussion = (clubId) => {
+        axios.post(`/api/clubs/add_book/${clubId}`, {
+                book_title: bookTitle,
+                book_desc: bookDesc,
+                book_img: bookLink
+
+        })
+        .then(function (response) {
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    useEffect(()=> {
+        getClubInfo(clubId);
+        getDiscussions(clubId)
+    }, [])
     
     const handleNewBook = (event) => {
         event.target.style.display = "none";
@@ -30,18 +70,25 @@ export default function Club() {
         bookDescObj.value = "";
         bookImgObj.value = "";
 
-        console.log(bookTitle)
-        console.log(bookDesc)
-        console.log(bookLink)
+        postDiscussion(clubId)
 
     }
 
     return (
         <div className="club mt-3">
-            <Header title={clubInfo.name} context={clubInfo.description} />
-            <Header sub_title={`Currently Reading: ${clubInfo.book.name}`} context={clubInfo.book.description} />
-            <img src={clubInfo.book.img} height="500px" width="350px" className="mb-3" /><br />
-            <button onClick={handleNewBook}>New Book</button>
+            {
+                clubInfo &&
+                <Header title={clubInfo.name} context={clubInfo.desc} />
+            }
+            {(discussions.length > 0) &&
+                <>
+                    <Header sub_title={`Currently Reading: ${discussions[0].name}`} context={discussions[0].desc} />
+                    <img src={discussions[0].img ? discussions[0].img : no_image} height="500px" width="350px" className="mb-3" /><br />
+                </>
+            }
+            {user.sub == clubInfo.owner &&
+                <button onClick={handleNewBook}>New Book</button>
+            }
             <div id="new-book">
                     <form id="book" onSubmit={handleSubmit}>
                     <label htmlFor="book-title" className="required">Book Title</label><br />
@@ -60,7 +107,7 @@ export default function Club() {
             <div className="mb-5">
                 {
                     discussions?.map((discussion, index) => (
-                        <ClubCard title={discussion.book}  date={discussion.date} link={`/club/${clubId}/discussion/${discussion.id}`} key={index} />
+                        <ClubCard title={discussion.name}  date={discussion.start_date} link={`/club/${clubId}/discussion/${discussion.id}`} key={index} />
                     ))
                 }
             </div>

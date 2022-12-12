@@ -19,7 +19,7 @@ const Protected = () => {
 
   if (isLoading) {
     return (
-      <div>Loading..</div>
+      <div className='mt-3'>Loading..</div>
     )
   }
 
