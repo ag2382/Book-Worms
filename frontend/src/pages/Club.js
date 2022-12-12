@@ -14,7 +14,8 @@ export default function Club() {
     const [bookDesc, setBookDesc] = useState("")
     const [bookLink, setBookLink] = useState("")
     const [discussions, setDiscussions] = useState([]);
-    const [clubInfo, setClubInfo] = useState([])    
+    const [clubInfo, setClubInfo] = useState([]) 
+
     const getDiscussions = (id) => {
         axios.get(`/api/clubs/discussion/${id}`)
         .then(function (response) {
@@ -44,6 +45,7 @@ export default function Club() {
         })
         .then(function (response) {
             console.log(response);
+            window.location.reload();
         })
         .catch(function (error) {
             console.log(error);

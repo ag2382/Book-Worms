@@ -25,8 +25,6 @@ export default function Discussion() {
         let review = document.getElementById("discussion-reply-text");
         let bookRating = document.getElementById("rating");
         if (review.value.replace(/\s/g, '').length) {
-            console.log(discussionReview)
-            console.log(rating)
             postDiscussion(clubId, discussionId)
             document.getElementById("discussion-reply-text").value = "";
             document.getElementById("rating").value = "";
@@ -49,7 +47,6 @@ export default function Discussion() {
         axios.get(`/api/clubs/get/review/${id}`)
         .then(function (response) {
             setReviews(response.data.reviews);
-            console.log(response)
         })
         .catch(function (error) {
             console.log(error);
