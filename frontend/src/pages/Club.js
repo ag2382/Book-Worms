@@ -93,13 +93,13 @@ export default function Club() {
             <div id="new-book">
                     <form id="book" onSubmit={handleSubmit}>
                     <label htmlFor="book-title" className="required">Book Title</label><br />
-                    <input id="book-title" type="text" onChange={(event) => setBookTitle(event.target.value)} className="mb-3" required />
+                    <input id="book-title" maxLength={"100"} type="text" onChange={(event) => setBookTitle(event.target.value)} className="mb-3" required />
                     <br />
                     <label htmlFor="book-description" className="required">Book Description</label><br />
-                    <textarea htmlFor="new-book" id="book-description" type="text" onChange={(event) => setBookDesc(event.target.value)} className="description mb-3" required />
+                    <textarea htmlFor="new-book" maxlength={"1000"} id="book-description" type="text" onChange={(event) => setBookDesc(event.target.value)} className="description mb-3" required />
                     <br />
                     <label htmlFor="img-link">Book Image Link</label><br />
-                    <input id="img-link" type="url" onChange={(event) => setBookLink(event.target.value)} className="mb-3" /><br />
+                    <input id="img-link" maxlength={"400"} type="url" onChange={(event) => setBookLink(event.target.value)} className="mb-3" /><br />
                     <input type="submit" value="Create" />
                 </form>
             </div>

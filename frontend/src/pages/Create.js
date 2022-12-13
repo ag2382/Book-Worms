@@ -41,10 +41,10 @@ export default function Create() {
             <form id="create-form" onSubmit={handleSubmit}>
                 <Header sub_title={"Club info"} />
                 <label htmlFor="club-name" className="required">Club Name</label><br />
-                    <input id="club-name" type="text" onChange={(event) => setClubName(event.target.value)} className="mb-3" required />
+                <input id="club-name" type="text" maxLength={"25"} onChange={(event) => setClubName(event.target.value)} className="mb-3" required />
                 <br />
                 <label htmlFor="club-desc" className="required">Club Description</label><br />
-                    <textarea htmlFor="create-form" id="club-desc" type="text" onChange={(event) => setClubDesc(event.target.value)} className="description mb-3" required />
+                <textarea htmlFor="create-form" maxLength={"1000"} id="club-desc" type="text" onChange={(event) => setClubDesc(event.target.value)} className="description mb-3" required />
                 <br />
                 <input type="submit" value="Create" />
             </form>

@@ -83,7 +83,7 @@ export default function Discussion() {
                     <label className="required" htmlFor="rating">Rating out of 5</label><br/>
                     <input placeholder="1" id="rating" className="mb-3" type="number" min="1" max="5" onChange={(event) => setRating(event.target.value)} required /><br/>
                     <label className="required" htmlFor="discussion-reply-text">Review</label>
-                    <textarea placeholder="Enter a review..." htmlFor="discussion-form" id="discussion-reply-text" onChange={(event) => setDiscussionReview(event.target.value)} className="px-2 py-3" required></textarea>
+                    <textarea placeholder="Enter a review..." maxlength={"1000"} htmlFor="discussion-form" id="discussion-reply-text" onChange={(event) => setDiscussionReview(event.target.value)} className="px-2 py-3" required></textarea>
                     <input className="mb-3" id="discussion-post-btn" type="submit" value="Post" />
                 </form>
             </div>
