@@ -57,7 +57,8 @@ export default function Discussion() {
         axios.post(`/api/clubs/post/review/${clubId}/${bookId}`, {
                 rating: rating,
                 review: discussionReview,
-                user_id: user.sub
+                user_id: user.sub,
+                username: user.name
 
         })
         .then(function (response) {
@@ -91,8 +92,9 @@ export default function Discussion() {
                         <div className="review card" key={index}>
                             <nav className="navbar navbar-light bg-light">
                                 <div className="container">
-                                    <p className="nav-item">{review.date}</p>
+                                    <p className="nav-item">{review.username}</p>
                                     <ul className="navbar-nav mr-auto">
+                                        <li className="nav-item">{review.date}</li>
                                         <li className="nav-item">Rating: {review.rating}/5</li>
                                     </ul>
                                 </div>

@@ -103,12 +103,13 @@ def new_review(club_id, book_id):
         user_id = data["user_id"]
         review = data["review"]
         rating = data["rating"]
+        username = data["username"]
 
         connection = connect()
         cursor = connection.cursor()
 
-        query = "INSERT INTO review(book_id, club_id, review_txt, member_id, rating) VALUES(%s, %s, %s, %s, %s);"
-        cursor.execute(query, (book_id, club_id, review, user_id, rating))
+        query = "INSERT INTO review(book_id, club_id, review_txt, member_id, rating, member_username) VALUES(%s, %s, %s, %s, %s, %s);"
+        cursor.execute(query, (book_id, club_id, review, user_id, rating, username))
 
         connection.commit()
         cursor.close()
@@ -242,7 +243,7 @@ def get_reviews(book_id):
 
         for result in results:
             out["reviews"].append(
-                {"book_id": result[0], "club_id": result[1], "review": result[2], "member_id": result[3], "rating": result[4], "date": result[5]}
+                {"book_id": result[0], "club_id": result[1], "review": result[2], "member_id": result[3], "rating": result[4], "date": result[5], "username": result[6]}
             )
 
         cursor.close()
