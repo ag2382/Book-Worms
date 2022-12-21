@@ -26,7 +26,7 @@ export default function BookWormsNavbar() {
                         <>
                             <NavDropdown title={user.name} id="link">
                                 <NavDropdown.Item href="/profile">View Profile</NavDropdown.Item>
-                                <NavDropdown.Item onClick={() => logout()}>
+                                <NavDropdown.Item onClick={() => logout({ returnTo: window.location.origin })}>
                                     Logout
                                 </NavDropdown.Item>
                             </NavDropdown>
